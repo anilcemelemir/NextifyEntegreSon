@@ -1,0 +1,33 @@
+****SON YAZILIM****
+
+ÖNEMLÝ:
+Yeni bir veritabaný oluþturup boþken dil karþýlaþtýrmasý utf8_turkish_ci olmalýdýr. Veritabanýný import etmeden
+önce ayarlayýnýz aksi durumda türkçe karakter hatasý oluþacaktýr.
+
+DÝL AYAR ANLATIM: veri tabaný oluþturulduðunda boþken üzerine týklanýr ve "içe aktar" butonunun yanýnda "iþlemler" botununa týklanýr. 
+Açýlan sayfada sað tarafta ki kolonda KARÞILAÞTIRMA yazan alan utf8_turkish_ci olarak ayarlanýr ve altýndaki git butonu ile kayýt edilir. 
+Daha sonrasýnda dosyalar içerisinde bulunan sql dosyasýný oluþturduðunuz veritabanýna import ediniz. 
+
+
+Ftp klasöründe bulunan tüm dosyalarý ftp nize atýnýz.
+
+Dosyalarýn içerisinde admin/controller/config.php dosyasýnda gerekli alanlarý kendinize göre düzeltiniz.
+
+Kurulum tamamlanmýþtýr. Satýn aldýðýnýz için teþekkür ederiz.
+
+-----------------------------------------
+
+*****Kurulum Sonrasý Ayarlar*****
+
+Admin link: alanadi.com/admin linki ile admine giriþ yapabilirsiniz.
+
+Admin giriþ bilgileri kullanýcý "admin" ve þifre "admin" dir.
+
+Giriþ yapýnca "ayarlar" menüsünün altýndan site linkini kurduðunuz alan adýný http:// dahil ve sonuna / iþareti ile tam olarak yazýnýz.
+
+Ýyi günlerde kullanýnýz.
+
+Her türlü destek ve iletiþim için;
+
+www.sonyazilim.net sitemizden bizlere ulaþabilir veya destek talebi açabilirsiniz.
+
