@@ -1443,92 +1443,128 @@ $demoGeriLink = $_SERVER['HTTP_REFERER'];
 		Header( "Location:../blog.php?status=no" );
 	}
 }
-if ( isset( $_POST[ 'widgetduzenle' ] ) )
-{
-	if (!$_SESSION[ 'kullanici_adi' ]) {
-		exit;
-	}
-	if ($DemCont==1) {
-$_SESSION['status']="demo";
-$demoGeriLink = $_SERVER['HTTP_REFERER'];
-		header( "Location:$demoGeriLink" );
-		exit;
-	}
-	$ayarkaydet = $db->prepare(
-		"UPDATE widget SET
-		widget_bhizmet=:bhizmet,
-		widget_hizmet=:hizmet,
-		widget_btwitter=:btwitter,
-		widget_twitter=:twitter,
-		widget_diger=:diger,
-		widget_bdiger=:bdiger,
-		widget_blog=:blog,
-		widget_proje=:proje,
-		widget_bproje=:bproje,
-		widget_referans=:referans,
-		widget_breferans=:breferans,
-		widget_galeri=:galeri,
-		widget_bgaleri=:bgaleri,
-		widget_burun=:burun,
-		widget_urun=:urun,
-		widget_yorum=:yorum,
-		widget_bwelcome=:bwelcome,
-		widget_welcome=:welcome,
-		widget_bwelcome1=:bwelcome1,
-		widget_welcome1=:welcome1,
-		widget_counter=:counter,
-		widget_bblog=:bblog,
-		widget_bara=:bara,
-		widget_ara=:ara,
-		widget_bilgi=:bilgi,
-		widget_bbilgi=:bbilgi,
-		widget_ufiyat=:ufiyat,
-		widget_usatinal=:usatinal,
-		widget_byorum=:byorum
-		WHERE widget_id={$_POST['widget_id']}"
-	);
-	$update     = $ayarkaydet->execute(
-		array(
-			'bhizmet'   => $_POST[ 'widget_bhizmet' ],
-			'hizmet'    => $_POST[ 'widget_hizmet' ],
-			'btwitter'  => $_POST[ 'widget_btwitter' ],
-			'twitter'   => $_POST[ 'widget_twitter' ],
-			'diger'     => $_POST[ 'widget_diger' ],
-			'bdiger'    => $_POST[ 'widget_bdiger' ],
-			'blog'      => $_POST[ 'widget_blog' ],
-			'proje'     => $_POST[ 'widget_proje' ],
-			'bproje'    => $_POST[ 'widget_bproje' ],
-			'referans'  => $_POST[ 'widget_referans' ],
-			'breferans' => $_POST[ 'widget_breferans' ],
-			'galeri'    => $_POST[ 'widget_galeri' ],
-			'bgaleri'   => $_POST[ 'widget_bgaleri' ],
-			'burun'     => $_POST[ 'widget_burun' ],
-			'urun'      => $_POST[ 'widget_urun' ],
-			'yorum'     => $_POST[ 'widget_yorum' ],
-			'bwelcome'  => $_POST[ 'widget_bwelcome' ],
-			'welcome'   => $_POST[ 'widget_welcome' ],
-			'counter'   => $_POST[ 'widget_counter' ],
-			'bwelcome1' => $_POST[ 'widget_bwelcome1' ],
-			'welcome1'  => $_POST[ 'widget_welcome1' ],
-			'bblog'     => $_POST[ 'widget_bblog' ],
-			'bara'      => $_POST[ 'widget_bara' ],
-			'ara'       => $_POST[ 'widget_ara' ],
-			'bilgi'     => $_POST[ 'widget_bilgi' ],
-			'bbilgi'    => $_POST[ 'widget_bbilgi' ],
-			'ufiyat'    => $_POST[ 'widget_ufiyat' ],
-			'usatinal'  => $_POST[ 'widget_usatinal' ],
-			'byorum'    => $_POST[ 'widget_byorum' ]
-		)
-	);
-	if ( $update )
-	{
-		Header( "Location:../modul.php?status=ok" );
-	}
-	else
-	{
-		Header( "Location:../modul.php?status=no" );
-	}
+if (isset($_POST['widgetduzenle'])) {
+
+    // Geliştirici hata görüntüleme
+    error_reporting(E_ALL);
+    ini_set('display_errors', 1);
+
+    // Oturum kontrolü
+    if (!isset($_SESSION['kullanici_adi'])) {
+        exit;
+    }
+
+    // Demo modu kontrolü
+    if ($DemCont == 1) {
+        $_SESSION['status'] = "demo";
+        $demoGeriLink = $_SERVER['HTTP_REFERER'];
+        header("Location: $demoGeriLink");
+        exit;
+    }
+
+    try {
+        // Eksik POST alanlarını boş string olarak varsay
+        $fields = [
+            'widget_bhizmet', 'widget_hizmet', 'widget_btwitter', 'widget_twitter',
+            'widget_diger', 'widget_bdiger', 'widget_blog', 'widget_proje',
+            'widget_bproje', 'widget_referans', 'widget_breferans', 'widget_galeri',
+            'widget_bgaleri', 'widget_burun', 'widget_urun', 'widget_yorum',
+            'widget_bwelcome', 'widget_welcome', 'widget_bwelcome1', 'widget_welcome1',
+            'widget_counter', 'widget_bblog', 'widget_bara', 'widget_ara',
+            'widget_bilgi', 'widget_bbilgi', 'widget_ufiyat', 'widget_usatinal',
+            'widget_byorum'
+        ];
+
+        foreach ($fields as $field) {
+            if (!isset($_POST[$field])) {
+                $_POST[$field] = "";
+            }
+        }
+
+        // Sorgu hazırla
+        $ayarkaydet = $db->prepare("
+            UPDATE widget SET
+                widget_bhizmet   = :bhizmet,
+                widget_hizmet    = :hizmet,
+                widget_btwitter  = :btwitter,
+                widget_twitter   = :twitter,
+                widget_diger     = :diger,
+                widget_bdiger    = :bdiger,
+                widget_blog      = :blog,
+                widget_proje     = :proje,
+                widget_bproje    = :bproje,
+                widget_referans  = :referans,
+                widget_breferans = :breferans,
+                widget_galeri    = :galeri,
+                widget_bgaleri   = :bgaleri,
+                widget_burun     = :burun,
+                widget_urun      = :urun,
+                widget_yorum     = :yorum,
+                widget_bwelcome  = :bwelcome,
+                widget_welcome   = :welcome,
+                widget_bwelcome1 = :bwelcome1,
+                widget_welcome1  = :welcome1,
+                widget_counter   = :counter,
+                widget_bblog     = :bblog,
+                widget_bara      = :bara,
+                widget_ara       = :ara,
+                widget_bilgi     = :bilgi,
+                widget_bbilgi    = :bbilgi,
+                widget_ufiyat    = :ufiyat,
+                widget_usatinal  = :usatinal,
+                widget_byorum    = :byorum
+            WHERE widget_id = :widget_id
+        ");
+
+        // Parametreleri bağla
+        $update = $ayarkaydet->execute([
+            'bhizmet'   => $_POST['widget_bhizmet'],
+            'hizmet'    => $_POST['widget_hizmet'],
+            'btwitter'  => $_POST['widget_btwitter'],
+            'twitter'   => $_POST['widget_twitter'],
+            'diger'     => $_POST['widget_diger'],
+            'bdiger'    => $_POST['widget_bdiger'],
+            'blog'      => $_POST['widget_blog'],
+            'proje'     => $_POST['widget_proje'],
+            'bproje'    => $_POST['widget_bproje'],
+            'referans'  => $_POST['widget_referans'],
+            'breferans' => $_POST['widget_breferans'],
+            'galeri'    => $_POST['widget_galeri'],
+            'bgaleri'   => $_POST['widget_bgaleri'],
+            'burun'     => $_POST['widget_burun'],
+            'urun'      => $_POST['widget_urun'],
+            'yorum'     => $_POST['widget_yorum'],
+            'bwelcome'  => $_POST['widget_bwelcome'],
+            'welcome'   => $_POST['widget_welcome'],
+            'bwelcome1' => $_POST['widget_bwelcome1'],
+            'welcome1'  => $_POST['widget_welcome1'],
+            'counter'   => $_POST['widget_counter'],
+            'bblog'     => $_POST['widget_bblog'],
+            'bara'      => $_POST['widget_bara'],
+            'ara'       => $_POST['widget_ara'],
+            'bilgi'     => $_POST['widget_bilgi'],
+            'bbilgi'    => $_POST['widget_bbilgi'],
+            'ufiyat'    => $_POST['widget_ufiyat'],
+            'usatinal'  => $_POST['widget_usatinal'],
+            'byorum'    => $_POST['widget_byorum'],
+            'widget_id' => $_POST['widget_id']
+        ]);
+
+        // Sonuç kontrolü
+        if ($update) {
+            header("Location: ../modul.php?status=ok");
+            exit;
+        } else {
+            header("Location: ../modul.php?status=no");
+            exit;
+        }
+
+    } catch (PDOException $e) {
+        echo "Hata oluştu: " . $e->getMessage();
+        exit;
+    }
 }
+
 if ( isset( $_POST[ 'projeyaziduzenle' ] ) )
 {
 	if (!$_SESSION[ 'kullanici_adi' ]) {

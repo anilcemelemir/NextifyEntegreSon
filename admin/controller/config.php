@@ -2,15 +2,19 @@
 $DemCont = 0; /// Demo moda almak için 1 yazınız. Gerçek moda almak için 0 yazınız.
 
 try {
-
-	$db=new PDO(
-        "mysql:host=db;dbname=scriptdb;charset=utf8",
+    $db = new PDO(
+        "mysql:host=db;dbname=scriptdb;charset=utf8mb4",
         "admin",
-        "admin123"
+        "admin123",
+        [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4"
+        ]
     );
-	$db->query("SET NAMES utf8");
-
+} catch (PDOException $e) {
+    die("Veritabanı bağlantı hatası: " . $e->getMessage());
 }
+
 
 
 // Aşağıda bir düzenleme yapmayınız!

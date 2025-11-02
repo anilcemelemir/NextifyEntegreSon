@@ -2,8 +2,9 @@
 include 'header.php';
 include 'topbar.php';
 include 'sidebar.php';
-$widget=$db->prepare("SELECT * from widget");
-$widget->execute(array(0));
+$widget = $db->prepare("SELECT * FROM widget");
+$widget->execute();
+
 $widgetprint=$widget->fetch(PDO::FETCH_ASSOC);
 ?>
 <!-- ============================================================== -->
