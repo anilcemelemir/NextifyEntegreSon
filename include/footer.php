@@ -26,21 +26,24 @@ $whatsappprint=$whatsapp->fetch(PDO::FETCH_ASSOC);  ?>
                             <div class="newsletter-text">
                                 <img src="images/email.png" style="width:65px;margin-bottom:30px;" alt="Mail 7x24 Destek">
                                 <h4 class="title"><a href="mailto:<?php echo $settingsprint['ayar_mail']; ?>" style="color: #fff;"><?php echo $settingsprint['ayar_mail']; ?></a></h4>
-                                <p class="text">Mail 7x24 Destek</p>
+                                <p class="text">Mail Destek</p>
                             </div>
                         </div>
                         <div class="col-md-4 col-sm-12 col-xs-12">
                             <div class="newsletter-text">
                                 <img src="images/whatsapp.png" style="width:65px;margin-bottom:30px;" alt="Whatsapp 7x24 Destek">
                                 <h4 class="title"><a href="https://wa.me/9<?php echo $settingsprint['ayar_whatsapp']; ?>" style="color: #fff;"><?php echo $settingsprint['ayar_whatsapp']; ?></a></h4>
-                                <p class="text">Whatsapp 7x24 Destek</p>
+                                <p class="text">Whatsapp Destek</p>
                             </div>
                         </div>
                         <div class="col-md-4 col-sm-12 col-xs-12">
                             <div class="newsletter-text">
                                 <img src="images/phone-call.png" style="width:65px;margin-bottom:30px;" alt="Tıkla Ara">
                                 <h4 class="title"><a href="tel:<?php echo $settingsprint['ayar_tel']; ?>" style="color: #fff;"><?php echo $settingsprint['ayar_tel']; ?></a></h4>
-                                <p class="text">Hafta içi 09:00-18:00</p>
+                                <p class="text">
+                                  Hafta İçi   09:00 - 18:00<br>
+                                  Cmt   09:00 - 12:00
+                                </p>
                             </div>
                         </div>
                     </div>
