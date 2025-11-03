@@ -129,7 +129,7 @@ if (isset($_POST['adetsil'])) {
             <?php 
           $fiyat=$geneltoplam;
 
-          $kdv=ceil($fiyat*18/100);
+          $kdv=ceil($fiyat*20/100);
 
           $geneltoplamkdv=$fiyat+$kdv;
           ?>

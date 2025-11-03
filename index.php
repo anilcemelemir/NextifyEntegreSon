@@ -42,6 +42,129 @@ require 'include/slide.php'; ?>
         </div>
     </div>
 </section>
+<?php } if ($widgetprint['widget_welcome1']==1) { ?>
+<section class="home4-pricing p-b50  m-t100  m-b100 particles-js" data-color="#fe4c1c,#00c3ff,#0160e7" data-id="i5-1" style="padding: 0;">
+    <div class="container">
+        <div class="row">
+            <div class="ot-heading text-center">
+                <h2 class="main-heading"><?php echo htmlspecialchars($widgetprint['widget_bwelcome1']); ?></h2>
+            </div>
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="ot-tabs">
+                    <ul class="tabs-heading unstyle text-center" style="display: flex; flex-wrap: wrap; margin-right: -15px; margin-left: -15px; place-content: space-between space-around; align-items: center; background-size: cover; justify-content: center;">
+                        <!-- Tüm Paketler sekmesi kaldırıldı -->
+                        <?php
+                        // İlk aktif kategori id'sini tut
+                        $firstActiveCat = null;
+
+                        $katFirst = 0;
+                        $paketkategori = $db->prepare("SELECT * from kategoripaket");
+                        $paketkategori->execute(array(0));
+                        foreach ($paketkategori as $key => $eskikategoriyaz) {
+                            // Bu kategoride vitrinde paket var mı?
+                            $urunsor = $db->prepare("SELECT * from urunler where urun_vitrin=1 and urun_paket='1' and urun_kategori=:kategori");
+                            $urunsor->execute(array('kategori' => $eskikategoriyaz['kategori_id']));
+                            $urunVarmi = $urunsor->rowCount();
+
+                            if ($urunVarmi > 0) {
+                                // İlk uygun kategoriye 'current' ver
+                                if ($firstActiveCat === null) {
+                                    $firstActiveCat = $eskikategoriyaz['kategori_id'];
+                                    $currentClass = ' current';
+                                } else {
+                                    $currentClass = '';
+                                }
+                        ?>
+                        <li class="tab-link octf-btn<?php echo $currentClass; ?>" style="margin-right: 10px;" data-tab="tab-<?php echo $eskikategoriyaz['kategori_id']; ?>">
+                            <img style="height: 60px;" src="admin/<?php echo $eskikategoriyaz['resim']; ?>" alt="<?php echo $eskikategoriyaz['kategori_ad']; ?>"> <?php echo $eskikategoriyaz['kategori_ad']; ?>
+                        </li>
+                        <?php
+                                $katFirst++;
+                            }
+                        }
+                        ?>
+                    </ul>
+
+                    <!-- Tüm Paketler içeriği kapatıldı
+                    <div id="tab-tumu" class="tab-content" style="background: none;">
+                        ...
+                    </div>
+                    -->
+
+                    <?php 
+                    // Kategori tab içerikleri
+                    $kataltFirst = 0;
+                    $paketaltkategori = $db->prepare("SELECT * from kategoripaket");
+                    $paketaltkategori->execute(array(0)); 
+                    foreach ($paketaltkategori as $key => $eskialtkategoriyaz) { 
+                        // Bu kategoride vitrinde paket var mı?
+                        $urunaltsor = $db->prepare("SELECT * from urunler where urun_vitrin=1 and urun_paket='1' and urun_kategori=:kategori");
+                        $urunaltsor->execute(array('kategori' => $eskialtkategoriyaz['kategori_id']));
+                        $urunaltVarmi = $urunaltsor->rowCount();
+
+                        if ($urunaltVarmi > 0) {
+                            // İlk aktif kategori içeriğine 'current' sınıfı ekle
+                            $contentCurrentClass = ($eskialtkategoriyaz['kategori_id'] == $firstActiveCat) ? ' current' : '';
+                    ?>
+                    <div id="tab-<?php echo $eskialtkategoriyaz['kategori_id']; ?>" class="tab-content<?php echo $contentCurrentClass; ?>" style="background: none;">
+                        <div class="row" style="display: flex; flex-wrap: wrap; margin-right: -15px; margin-left: -15px; place-content: space-between space-around; align-items: center; background-size: cover;">
+                            <?php 
+                            $urr = 0;
+                            $urunsor = $db->prepare("SELECT * from urunler where urun_paket='1' and urun_vitrin=1 and urun_kategori=:kategorix order by urun_id ASC");
+                            $urunsor->execute(array('kategorix' => $eskialtkategoriyaz['kategori_id']));
+                            foreach ($urunsor as $key => $uruncek) {  
+                                $eskikategori = $db->prepare("SELECT * from kategoripaket where kategori_id=:kategori_id");
+                                $eskikategori->execute(array('kategori_id' => $uruncek['urun_kategori']));
+                                $eskikategoriyaz = $eskikategori->fetch(PDO::FETCH_ASSOC);
+                                if ($urr == 3) {
+                                    $urr = 0;
+                                }
+                            ?>
+                            <div class="col-md-4 col-sm-12 col-xs-12  m-b50">
+                                <div class="ot-pricing-table bg-shape <?php if ($urr==0) { echo "s1"; } ?><?php if ($urr==1) { echo "s3 feature"; } ?><?php if ($urr==2) { echo "s2"; } ?>">
+                                    <span class="title-table"><?php echo $uruncek['urun_baslik']; ?></span>
+                                    <div class="inner-table">
+                                        <img src="admin/<?php echo $eskikategoriyaz['resim']; ?>" alt="Executive">
+                                        <h2><sup><i class="fas fa-lira-sign"></i></sup> <?php echo $uruncek['urun_fiyat']; ?> <small>+KDV</small></h2>
+                                        <p>
+                                            <h5 class="card-title text-muted text-uppercase text-center">
+                                                <a href="<?php echo $settingsprint['ayar_siteurl']; ?><?=seo('paket-'.$eskikategoriyaz["kategori_ad"]).'-'.$eskikategoriyaz["kategori_id"]?>">
+                                                    <?php echo $eskikategoriyaz['kategori_ad']; ?>
+                                                </a>
+                                            </h5>
+                                        </p>
+                                        <div class="details">
+                                            <ul>
+                                                <?php 
+                                                $icerik = $uruncek['urun_aciklama'];
+                                                $satir = explode("\n", $icerik);
+                                                foreach ($satir as $val) { ?>
+                                                    <li><?=$val?></li>
+                                                <?php } ?>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <form method="post" action="">
+                                        <input type="hidden" name="urun_adi" value="<?php echo $uruncek['urun_baslik']; ?>">
+                                        <input type="hidden" name="urun_paket" value="<?php echo $uruncek['urun_paket']; ?>">
+                                        <input type="hidden" name="urun_adet" value="1">
+                                        <input type="hidden" name="urun_fiyat" value="<?php echo $uruncek['urun_fiyat']; ?>">
+                                        <input type="hidden" name="urun_id" value="<?php echo $uruncek['urun_id']; ?>">
+                                        <div class="plan-button">
+                                            <button name="sepetle" type="submit" class="octf-btn octf-btn-icon octf-btn-third">Sepete Ekle <i class="fa fa-shopping-cart"></i></button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <?php $urr++; } ?>
+                        </div>
+                    </div>
+                    <?php $kataltFirst++; } } ?>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 <?php } if ($widgetprint['widget_hizmet']==1) { ?>
 <section class="woocommerce p-t60 p-b30 xs-p-tb80 particles-js" data-color="#fe4c1c,#00c3ff,#0160e7" data-id="i2-3">
     <div class="content-product-wrapper">
@@ -127,161 +250,6 @@ require 'include/slide.php'; ?>
         </div>
     </div>
 </section>
-<?php } if ($widgetprint['widget_welcome1']==1) { ?>
-<section class="home4-pricing p-b50  m-t100  m-b100 particles-js" data-color="#fe4c1c,#00c3ff,#0160e7" data-id="i5-1" style="padding: 0;">
-    <div class="container">
-        <div class="row">
-            <div class="ot-heading text-center">
-                <h2 class="main-heading"><?php echo htmlspecialchars($widgetprint['widget_bwelcome1']); ?></h2>
-            </div>
-            <div class="col-md-12 col-sm-12 col-xs-12">
-                <div class="ot-tabs">
-                    <ul class="tabs-heading unstyle text-center" style="display: flex; flex-wrap: wrap; margin-right: -15px; margin-left: -15px; place-content: space-between space-around; align-items: center; background-size: cover; justify-content: center;">
-                        <li class="tab-link octf-btn current" style="margin-right: 10px;" data-tab="tab-tumu">
-                            <img style="height: 60px;" src="images/expand.png" alt="Paketler">
-                            Tüm Paketler
-                        </li>
-                        <?php  $katFirst=0;
-                        $paketkategori=$db->prepare("SELECT * from kategoripaket");
-                        $paketkategori->execute(array(0)); 
-                        foreach ($paketkategori as $key => $eskikategoriyaz) { 
-                            $urunVarmi =0;
-                            $urunsor=$db->prepare("SELECT * from urunler where urun_vitrin=1 and urun_paket='1' and urun_kategori=:kategori");
-                            $urunsor->execute(array('kategori' => $eskikategoriyaz['kategori_id']));
-                            $urunVarmi = $urunsor->rowCount();
-                            if ($urunVarmi>0) {  ?>
-                        <li class="tab-link octf-btn" style="margin-right: 10px;" data-tab="tab-<?php echo $eskikategoriyaz['kategori_id']; ?>">
-                            <img style="height: 60px;" src="admin/<?php echo $eskikategoriyaz['resim']; ?>" alt="<?php echo $eskikategoriyaz['kategori_ad']; ?>"> <?php echo $eskikategoriyaz['kategori_ad']; ?>
-                        </li>
-                        <?php $katFirst++; } } ?>
-                    </ul>
-                    <div id="tab-tumu" class="tab-content current" style="background: none;">
-                        <div class="row" style="display: flex; flex-wrap: wrap; margin-right: -15px; margin-left: -15px; place-content: space-between space-around; align-items: center; background-size: cover;">
-                            <?php 
-                            $urr=0;
-                            $urunsor=$db->prepare("SELECT * from urunler where urun_paket='1' and urun_vitrin=1 order by urun_id ASC");
-                            $urunsor->execute(array(0));
-                            foreach ($urunsor as $key => $uruncek) {  
-                                $eskikategori=$db->prepare("SELECT * from kategoripaket where kategori_id=:kategori_id");
-                                $eskikategori->execute(array(
-                                    'kategori_id' => $uruncek['urun_kategori']
-                                ));
-                                $eskikategoriyaz=$eskikategori->fetch(PDO::FETCH_ASSOC);
-                                if ($urr==3) {
-                                    $urr=0;
-                                }
-                                ?>
-
-                            <div class="col-md-4 col-sm-12 col-xs-12  m-b50">
-                                <div class="ot-pricing-table bg-shape <?php if($urr==0) { echo "s1"; } ?><?php if($urr==1) { echo "s3 feature"; } ?><?php if($urr==2) { echo "s2"; } ?>">
-                                    <span class="title-table"><?php echo $uruncek['urun_baslik']; ?></span>
-                                    <div class="inner-table">
-                                        <img src="admin/<?php echo $eskikategoriyaz['resim']; ?>" alt="Executive">
-                                        <h2><sup><i class="fas fa-lira-sign"></i></sup> <?php echo $uruncek['urun_fiyat']; ?> <small>+KDV</small></h2>
-                                        <p>
-                                        <h5 class="card-title text-muted text-uppercase text-center"><a href="<?php echo $settingsprint['ayar_siteurl']; ?><?=seo('paket-'.$eskikategoriyaz["kategori_ad"]).'-'.$eskikategoriyaz["kategori_id"]?>"><?php echo $eskikategoriyaz['kategori_ad']; ?> </a></h5>
-                                        </p>
-                                        <div class="details">
-                                            <ul>
-                                                <?php 
-                                                $icerik = $uruncek['urun_aciklama'];
-
-                                                $satir = explode ("\n",$icerik);
-                                                ?>
-                                                <?php foreach ($satir as $val) { ?>
-                                                <li><?=$val?></li>
-                                                <?php } ?>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    <form method="post" action="">
-                                        <input type="hidden" name="urun_adi" value="<?php echo $uruncek['urun_baslik']; ?>">
-                                        <input type="hidden" name="urun_paket" value="<?php echo $uruncek['urun_paket']; ?>">
-                                        <input type="hidden" name="urun_adet" value="1">
-                                        <input type="hidden" name="urun_fiyat" value="<?php echo $uruncek['urun_fiyat']; ?>">
-                                        <input type="hidden" name="urun_id" value="<?php echo $uruncek['urun_id']; ?>">
-
-                                        <div class="plan-button">
-                                            <button name="sepetle" type="submit" class="octf-btn octf-btn-icon octf-btn-third">Sepete Ekle <i class="fa fa-shopping-cart"></i></button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                            <?php $urr++;  }  ?>
-                        </div>
-                    </div>
-                    <?php 
-                    $kataltFirst=0;
-                    $paketaltkategori=$db->prepare("SELECT * from kategoripaket");
-                    $paketaltkategori->execute(array(0)); 
-                    foreach ($paketaltkategori as $key => $eskialtkategoriyaz) { 
-                        $urunaltVarmi =0;
-                        $urunaltsor=$db->prepare("SELECT * from urunler where urun_vitrin=1 and urun_paket='1' and urun_kategori=:kategori");
-                        $urunaltsor->execute(array('kategori' => $eskialtkategoriyaz['kategori_id']));
-                        $urunaltVarmi = $urunaltsor->rowCount();
-                        if ($urunaltVarmi>0) {
-                    ?>
-                    <div id="tab-<?php echo $eskialtkategoriyaz['kategori_id']; ?>" class="tab-content" style="background: none;">
-                        <div class="row" style="display: flex; flex-wrap: wrap; margin-right: -15px; margin-left: -15px; place-content: space-between space-around; align-items: center; background-size: cover;">
-                            <?php 
-                            $urr=0;
-                            $urunsor=$db->prepare("SELECT * from urunler where urun_paket='1' and urun_vitrin=1 and urun_kategori=:kategorix order by urun_id ASC");
-                            $urunsor->execute(array('kategorix' => $eskialtkategoriyaz['kategori_id']));
-                            foreach ($urunsor as $key => $uruncek) {  
-                                $eskikategori=$db->prepare("SELECT * from kategoripaket where kategori_id=:kategori_id");
-                                $eskikategori->execute(array(
-                                    'kategori_id' => $uruncek['urun_kategori']
-                                ));
-                                $eskikategoriyaz=$eskikategori->fetch(PDO::FETCH_ASSOC);
-                                if ($urr==3) {
-                                    $urr=0;
-                                }
-                                ?>
-
-                            <div class="col-md-4 col-sm-12 col-xs-12  m-b50">
-                                <div class="ot-pricing-table bg-shape <?php if($urr==0) { echo "s1"; } ?><?php if($urr==1) { echo "s3 feature"; } ?><?php if($urr==2) { echo "s2"; } ?>">
-                                    <span class="title-table"><?php echo $uruncek['urun_baslik']; ?></span>
-                                    <div class="inner-table">
-                                        <img src="admin/<?php echo $eskialtkategoriyaz['resim']; ?>" alt="Executive">
-                                        <h2><sup><i class="fas fa-lira-sign"></i></sup> <?php echo $uruncek['urun_fiyat']; ?> <small>+KDV</small></h2>
-                                        <p>
-                                        <h5 class="card-title text-muted text-uppercase text-center"><a href="<?php echo $settingsprint['ayar_siteurl']; ?><?=seo('paket-'.$eskikategoriyaz["kategori_ad"]).'-'.$eskikategoriyaz["kategori_id"]?>"><?php echo $eskikategoriyaz['kategori_ad']; ?> </a></h5>
-                                        </p>
-                                        <div class="details">
-                                            <ul>
-                                                <?php 
-                                                $icerik = $uruncek['urun_aciklama'];
-
-                                                $satir = explode ("\n",$icerik);
-                                                ?>
-                                                <?php foreach ($satir as $val) { ?>
-                                                <li><?=$val?></li>
-                                                <?php } ?>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    <form method="post" action="">
-                                        <input type="hidden" name="urun_adi" value="<?php echo $uruncek['urun_baslik']; ?>">
-                                        <input type="hidden" name="urun_paket" value="<?php echo $uruncek['urun_paket']; ?>">
-                                        <input type="hidden" name="urun_adet" value="1">
-                                        <input type="hidden" name="urun_fiyat" value="<?php echo $uruncek['urun_fiyat']; ?>">
-                                        <input type="hidden" name="urun_id" value="<?php echo $uruncek['urun_id']; ?>">
-
-                                        <div class="plan-button">
-                                            <button name="sepetle" type="submit" class="octf-btn octf-btn-icon octf-btn-third">Sepete Ekle <i class="fa fa-shopping-cart"></i></button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                            <?php $urr++;  }  ?>
-                        </div>
-                    </div>
-                    <?php $kataltFirst++; } } ?>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
 <?php } if ($widgetprint['widget_urun']==1) { ?>
 <section class="home3-service m-t100 m-b100 particles-js" data-color="#fe4c1c,#00c3ff,#0160e7" data-id="i1-4">
     <div class="container">
@@ -291,7 +259,7 @@ require 'include/slide.php'; ?>
             $counter->execute(array(0));
             foreach ($counter as $key => $counterprint) { if ($counterSay==0) { ?>
             <div class="col-md-3 col-sm-6 col-xs-13">
-                <div class="circle-progress" data-color1="<?php echo $settingsprint['ayar_renk3'];?>" data-color2="<?php echo $settingsprint['ayar_renk4'];?>">
+               <div class="circle-progress" data-color1="<?php echo $settingsprint['ayar_renk3'];?>" data-color2="<?php echo $settingsprint['ayar_renk4'];?>"><!--yüzdeli kısım-->
                     <div class="inner-bar" data-percent="<?php echo $counterprint['counter_rakam']; ?>">
                         <span><span class="percent"><?php echo $counterprint['counter_rakam']; ?></span>%</span>
                     </div>
@@ -300,25 +268,30 @@ require 'include/slide.php'; ?>
             </div>
             <?php } if ($counterSay==1) { ?>
             <div class="col-md-3 col-sm-6 col-xs-13 m-t60">
-                <div class="circle-progress" data-color1="<?php echo $settingsprint['ayar_renk3'];?>" data-color2="<?php echo $settingsprint['ayar_renk4'];?>">
-                    <div class="inner-bar" data-percent="<?php echo $counterprint['counter_rakam']; ?>">
-                        <span><span class="percent"><?php echo $counterprint['counter_rakam']; ?></span>%</span>
-                    </div>
-                    <h4><?php echo $counterprint['counter_isim']; ?></h4>
-                </div>
+                <div class="circle-progress" data-color1="<?php echo $settingsprint['ayar_renk3'];?>" data-color2="<?php echo $settingsprint['ayar_renk4'];?>"><!--rakamlı kısım-->
+    <div class="inner-bar" data-percent="<?php echo $counterprint['counter_rakam']; ?>">
+        <span><span class="percent"><?php echo $counterprint['counter_rakam']; ?></span>+</span>
+    </div>
+    <h4><?php echo $counterprint['counter_isim']; ?></h4>
+</div>
             </div>
             <?php } if ($counterSay==2) { ?>
-            <div class="col-md-3 col-sm-6 col-xs-13 xs-m-t60">
-                <div class="circle-progress" data-color1="<?php echo $settingsprint['ayar_renk3'];?>" data-color2="<?php echo $settingsprint['ayar_renk4'];?>">
-                    <div class="inner-bar" data-percent="<?php echo $counterprint['counter_rakam']; ?>">
-                        <span><span class="percent"><?php echo $counterprint['counter_rakam']; ?></span>%</span>
-                    </div>
-                    <h4><?php echo $counterprint['counter_isim']; ?></h4>
-                </div>
-            </div>
+            <?php
+$val = (int)$counterprint['counter_rakam'];
+$percent = max(0, min(100, (int) round(($val / 1000) * 100)));
+?>
+<div class="col-md-3 col-sm-6 col-xs-13 xs-m-t60"><!--rakamlı kısım 1000 üzerinden-->
+    <div class="circle-progress" data-color1="<?php echo $settingsprint['ayar_renk3'];?>" data-color2="<?php echo $settingsprint['ayar_renk4'];?>">
+        <div class="inner-bar" data-percent="<?php echo $percent; ?>">
+            <span class="counter-value"><?php echo $val; ?>+</span>
+            <span class="percent" style="display:none;"><?php echo $percent; ?></span>
+        </div>
+        <h4><?php echo $counterprint['counter_isim']; ?></h4>
+    </div>
+</div>
             <?php } if ($counterSay==3) { ?>
             <div class="col-md-3 col-sm-6 col-xs-13 m-t60">
-                <div class="circle-progress" data-color1="<?php echo $settingsprint['ayar_renk3'];?>" data-color2="<?php echo $settingsprint['ayar_renk4'];?>">
+                <div class="circle-progress" data-color1="<?php echo $settingsprint['ayar_renk3'];?>" data-color2="<?php echo $settingsprint['ayar_renk4'];?>"><!--yüzdeli kısım-->
                     <div class="inner-bar" data-percent="<?php echo $counterprint['counter_rakam']; ?>">
                         <span><span class="percent"><?php echo $counterprint['counter_rakam']; ?></span>%</span>
                     </div>

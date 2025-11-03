@@ -2,7 +2,7 @@ RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule .(css|js|jpg|jpeg|png|gif|ico|swf|bmp)$ - [nocase,redirect=404,last]
 
-ErrorDocument 404 http://localhost/12.2021/v7plus/404
+ErrorDocument 404 http://localhost:9090/404
 
 
 RewriteRule ^sepet$ sepet.php [NC,L] 
