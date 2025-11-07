@@ -1,5 +1,5 @@
 <footer class="footer">
-    <span>Copyright &copy; 2017 <b>MÜŞTERİ</b>PANELİ</span>
+    <span>Copyright &copy; 2025 Nextify <b>MÜŞTERİ</b>PANELİ</span>
 </footer>
 </section>
 <!-- ============================================================== -->

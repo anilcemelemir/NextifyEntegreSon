@@ -147,7 +147,7 @@ $sayBildirim = $odeme->rowCount();
 										</tr>
 										<tr>
 											<td><strong>KDV :</strong></td>
-											<td>(%18)  <i class="fa fa-try"></i><?php echo $inovanceprint['siparis_fiyat']-$inovanceprint['siparis_fiyat_kdvsiz']; ?></td>
+											<td>(%20)  <i class="fa fa-try"></i><?php echo $inovanceprint['siparis_fiyat']-$inovanceprint['siparis_fiyat_kdvsiz']; ?></td>
 										</tr>
 										<tr>
 											<td><strong>TOPLAM :</strong></td>
@@ -172,9 +172,7 @@ $sayBildirim = $odeme->rowCount();
 									</select>
 								</div>
 								<div class="row">
-									<div class="col-md-12 text-right">
-										<div class="g-recaptcha text-center" data-sitekey="<?=$linkApi['ranahtar']?>"></div>
-									</div>
+									<!-- RECAPTCHA KODU KALDIRILDΙ -->
 									<div class="col-md-12 text-right">
 										<div>            
 											<button style="cursor: pointer;" type="submit" name="odemedevam" class="btn btn-primary">Ödemeyi Tamamla</button>            

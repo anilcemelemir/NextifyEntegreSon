@@ -103,12 +103,12 @@ if(isset($_SESSION['uye_mail']) && !empty($_SESSION['uye_mail'])) {
                                                 <a class="cart-contents" href="hesabim" title="Hesabima Git">
                                                     <i style="color: #000000ff;" class="far fa-user"></i>
                                                     <?php if($logged_in && !empty($user_name)): ?>
-                                                        <span style="margin-left: 8px; color: #5dc625ff; font-size: 17px; display: inline-block;">
+                                                        <span style="margin-left: 8px; color: #CCE63C; font-size: 17px; display: inline-block;">
                                                             <?php echo htmlspecialchars($user_name); ?>
                                                         </span>
                                                     <?php else: ?>
-                                                        <span style="margin-left: 8px; color: #5dc625ff; font-size: 15px; display: inline-block;">
-                                                            Giriş Yap / Üye Ol
+                                                        <span style="margin-left: 8px; color: #CCE63C; font-size: 15px; display: inline-block;">
+                                                            Giriş Yap / <b>Üye Ol </b>
                                                         </span>
                                                     <?php endif; ?>
                                                 </a>

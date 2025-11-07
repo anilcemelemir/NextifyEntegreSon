@@ -46,9 +46,7 @@ $uyeprint=$uyebilgi->fetch(PDO::FETCH_ASSOC);
 									</div>
 								</div>
 
-								<div class="form-group text-center">
-									<div class="g-recaptcha text-center" data-sitekey="<?=$linkApi['ranahtar']?>"></div>
-								</div>
+								<!-- RECAPTCHA KALDIRILDΙ - 1. FORM -->
 								<div class="form-group">
 									<button type="submit" class="btn btn-primary" name="uyeresimduzenle" >Güncelle</button>
 									
@@ -97,9 +95,7 @@ $uyeprint=$uyebilgi->fetch(PDO::FETCH_ASSOC);
 											<label>Adres</label>
 											<textarea type="text" name="uye_adres" style="height: 100px;" class="form-control"><?php echo $uyeprint['uye_adres']; ?></textarea>
 										</div>
-										<div style="margin-top: 10px;" class="col-md-12">
-											<div class="g-recaptcha text-center" data-sitekey="<?=$linkApi['ranahtar']?>"></div>
-										</div>
+										<!-- RECAPTCHA KALDIRILDΙ - 2. FORM -->
 										<div style="margin-top: 10px;" class="col-md-8">
 											<button style="cursor: pointer;" type="submit" name="uyeduzenle" class="btn btn-success btn-icon"><i class="fa fa-floppy-o "></i>Güncelle</button>
 										</div>				

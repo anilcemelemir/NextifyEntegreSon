@@ -94,7 +94,7 @@ $htmlwrite=$html->fetch(PDO::FETCH_ASSOC);
 										<?php 
 										$fiyat=$toplam;
 
-										$kdv=ceil($fiyat*18/100);
+										$kdv=ceil($fiyat*20/100);
 
 										$geneltoplamkdv=$fiyat+$kdv;
 										?>

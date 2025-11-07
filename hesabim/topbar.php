@@ -13,6 +13,9 @@ $yenisay->execute(array(
 
 $yeni=$yenisay->RowCount();
 
+// KULLANİCı ADI HAZIRLA
+$user_name = isset($_SESSION['uye_ad']) ? $_SESSION['uye_ad'] : 'Kullanıcı';
+
 ?>
 <!-- ============================================================== -->
 <!-- 						Topbar Start 							-->
@@ -39,6 +42,12 @@ $yeni=$yenisay->RowCount();
 				</div>
 				<div class="col">
 					<ul class="list-inline top-right-nav">
+						<!-- KULLANİCı ADI GÖSTERME -->
+						<li style="margin-right: 20px; padding-top: 8px;">
+							<span style="color: #333; font-weight: 500; font-size: 13px;">
+								Hoş geldiniz: <br> <strong style="color: #007bff;font-size: 15px;"><?php echo htmlspecialchars($user_name); ?></strong>
+							</span>
+						</li>
 						<li class="dropdown icon-dropdown d-none-m">
 							<a href="destekler"><i class="icon-earphones-alt"></i> <span class="badge badge-danger"><?php echo $yeni; ?></span></a>
 						</li>

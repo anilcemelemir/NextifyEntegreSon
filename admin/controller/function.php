@@ -75,15 +75,9 @@ if ( isset( $_POST[ 'uyegiris' ] ) )
 			$_SESSION[ 'uye_mail' ]  = $uyesorprint[ 'uye_mail' ];
 			$_SESSION[ 'uye_ad' ]    = trim($uyesorprint[ 'uye_ad' ]) . ' ' . trim($uyesorprint[ 'uye_soyad' ]);
 			
-			
-			// SONRA REDIRECT YAP
-			if (isset($_SESSION['sonlink']) && !empty($_SESSION['sonlink'])) {
-				$link = $_SESSION['sonlink'];
-				unset($_SESSION['sonlink']);
-				header( "Location:$link?status=ok" );
-			} else {
-				header( 'Location:../../hesabim?status=ok' );
-			}
+			// SONRA REDIRECT YAP (session_write_close kullanma)
+			// Ana sayfaya yönlendir
+			header( 'Location:../../index.php?status=ok' );
 			exit;
 		}
 		else
@@ -554,15 +548,6 @@ $demoGeriLink = $_SERVER['HTTP_REFERER'];
 		exit;
 	}
 	$siparis_id      = htmlspecialchars(strip_tags(trim($_POST[ 'siparis_id' ])));
-	$captcha = $_POST['g-recaptcha-response'];
-	if (!$captcha) {
-		header( "Location:../../hesabim/siparis-detay?siparis_id=$siparis_id&captcha=no" );
-		exit;
-	}
-	$secretKey = $linkApi['rgizlianahtar'];
-	$ip = GetIP();
-	$response = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret=".$secretKey."&response=".$captcha."&remoteip=".$ip);
-	$responseKeys = json_decode($response,true);
 	$siparis_odeme      = $_POST[ 'siparis_odeme' ];
 	if ($_POST[ 'siparis_odeme' ]== "Havale") {
 		$ayarkaydet = $db->prepare(
@@ -651,15 +636,6 @@ $demoGeriLink = $_SERVER['HTTP_REFERER'];
 		header( "Location:$demoGeriLink" );
 		exit;
 	}
-	$captcha = $_POST['g-recaptcha-response'];
-	if (!$captcha) {
-		header( "Location:../../hesabim/hesap-ayarlari?captcha=no" );
-		exit;
-	}
-	$secretKey = $linkApi['rgizlianahtar'];
-	$ip = GetIP();
-	$response = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret=".$secretKey."&response=".$captcha."&remoteip=".$ip);
-	$responseKeys = json_decode($response,true);
 	$uploads_dir = '../../admin/assets/img/genel';
 	@$tmp_name = $_FILES[ 'uye_resim' ][ "tmp_name" ];
 	$uzanti='.jpg';
@@ -1005,15 +981,6 @@ $demoGeriLink = $_SERVER['HTTP_REFERER'];
 		header( "Location:$demoGeriLink" );
 		exit;
 	}
-	$captcha = $_POST['g-recaptcha-response'];
-	if (!$captcha) {
-		header( "Location:../../hesabim/hesap-ayarlari?captcha=no" );
-		exit;
-	}
-	$secretKey = $linkApi['rgizlianahtar'];
-	$ip = GetIP();
-	$response = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret=".$secretKey."&response=".$captcha."&remoteip=".$ip);
-	$responseKeys = json_decode($response,true);
 	$ayarkaydet = $db->prepare(
 		"UPDATE uye SET
 		uye_ad=:ad,

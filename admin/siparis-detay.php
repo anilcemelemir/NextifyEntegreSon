@@ -132,7 +132,7 @@ $sayBildirim = $odeme->rowCount();
 										</tr>
 										<tr>
 											<td><strong>KDV :</strong></td>
-											<td>(%18)  <i class="fa fa-try"></i><?php echo $inovanceprint['siparis_fiyat']-$inovanceprint['siparis_fiyat_kdvsiz']; ?></td>
+											<td>(%20)  <i class="fa fa-try"></i><?php echo $inovanceprint['siparis_fiyat']-$inovanceprint['siparis_fiyat_kdvsiz']; ?></td>
 										</tr>
 										<tr>
 											<td><strong>TOPLAM :</strong></td>
