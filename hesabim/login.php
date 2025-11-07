@@ -95,7 +95,7 @@ $linkApi=$linkApi->fetch(PDO::FETCH_ASSOC);
                             </div>
                         </div>
                         <div class="text-center misc-footer">
-                            <p>Copyright &copy; 2017</p>
+                            <p>Copyright &copy; 2025</p>
                         </div>
                     </div>
                 </div>

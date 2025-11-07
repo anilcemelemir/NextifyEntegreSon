@@ -70,19 +70,26 @@ if ( isset( $_POST[ 'uyegiris' ] ) )
 		$say = $uyesor->rowCount();
 		if ( $say > 0 )
 		{
-			$_SESSION[ 'uye_mail' ] = $uyesorprint[ 'uye_mail' ];
-			$_SESSION[ 'uye_ad' ]   = $uyesorprint[ 'uye_ad' ] . $uyesorprint[ 'uye_soyad' ];
-			if ($_SESSION['sonlink']) {
+			// SESSION VERİLERİNİ KAYDET
+			$_SESSION[ 'uye_id' ]    = $uyesorprint[ 'uye_id' ];
+			$_SESSION[ 'uye_mail' ]  = $uyesorprint[ 'uye_mail' ];
+			$_SESSION[ 'uye_ad' ]    = trim($uyesorprint[ 'uye_ad' ]) . ' ' . trim($uyesorprint[ 'uye_soyad' ]);
+			
+			
+			// SONRA REDIRECT YAP
+			if (isset($_SESSION['sonlink']) && !empty($_SESSION['sonlink'])) {
 				$link = $_SESSION['sonlink'];
-				header( "Location:$link?status=ok" );
 				unset($_SESSION['sonlink']);
+				header( "Location:$link?status=ok" );
 			} else {
 				header( 'Location:../../hesabim?status=ok' );
 			}
+			exit;
 		}
 		else
 		{
 			header( 'Location:../../hesabim/uye-girisi?status=no' );
+			exit;
 		}
 	}
 }
