@@ -47,6 +47,7 @@ RewriteRule ^hesabim/yeni-sifre$ hesabim/yeni-sifre.php [NC,L]
 RewriteRule ^hesabim/uye-onay$ hesabim/uye-onay.php [NC,L]
 RewriteRule ^hesabim/yeni-destek$ hesabim/yeni-destek.php [NC,L]
 RewriteRule ^hesabim/destekler$ hesabim/destekler.php [NC,L]
+RewriteRule ^hesabim/abonelikler$ hesabim/aboneliklerim.php [NC,L]
 
 
 #SSL (Aktif etmek için bu satırı değil altta yer alan iki satırın başından sadece # işaretini kaldırın! SSL yönlendirme aktif olacaktır.)

@@ -33,8 +33,11 @@ $urunsor->execute(array(0));
 								<th class="text-left">
 									<strong>Kategori</strong>
 								</th>
-								<th class="text-left">
-									<strong>Paket Fiyatı</strong>
+								<th class="text-center">
+									<strong>Aylık Fiyat</strong>
+								</th>
+								<th class="text-center">
+									<strong>Yıllık Fiyat</strong>
 								</th>
 								<th class="text-center">
 									<strong>İşlemler</strong>
@@ -61,9 +64,14 @@ $urunsor->execute(array(0));
 									<td>
 										<?php echo $eskikategoriyaz['kategori_ad'] ?>
 									</td>
-									<td><?php echo $uruncek['urun_fiyat']." TL "; ?></td>
 									<td class="text-center">
-										<a target="_blank" href="<?php echo $settingsprint['ayar_siteurl']; ?><?=seo('paket-'.$eskikategoriyaz["kategori_ad"]).'-'.$eskikategoriyaz["kategori_id"]?>" title="Düzenle" class="btn btn-sm btn-warning"><i class="fa fa-external-link"></i></a>
+										<?php echo number_format($uruncek['urun_aylik_fiyat'], 2, ',', '.'); ?> ₺
+									</td>
+									<td class="text-center">
+										<?php echo number_format($uruncek['urun_yillik_fiyat'], 2, ',', '.'); ?> ₺
+									</td>
+									<td class="text-center">
+										<a target="_blank" href="<?php echo $settingsprint['ayar_siteurl']; ?><?=seo('paket-'.$eskikategoriyaz["kategori_ad"]).'-'.$eskikategoriyaz["kategori_id"]?>" title="Görüntüle" class="btn btn-sm btn-warning"><i class="fa fa-external-link"></i></a>
 										<a href="paket-duzenle.php?urun_id=<?php echo $uruncek['urun_id']; ?>" title="Düzenle" class="btn btn-sm btn-success"><i class="fa fa-edit"></i></a>
 										<a href="controller/function.php?paketsil=ok&urun_id=<?php echo $uruncek['urun_id']; ?>" title="Sil" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></a>
 									</td>

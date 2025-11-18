@@ -37,6 +37,9 @@ $link = $_SERVER['REQUEST_URI'];
                         <li class="nav-item"><a class="nav-link" href="uye-ayarlari.php">Üyelik Ayarları</a></li>
                     </ul>
                 </li>
+                <li class="nav-item <?php if (strstr($link, "abone")) { echo "active";} ?>">
+                    <a class="nav-link" href="abonelikler.php"><i class="fa fa-list"></i> <span class="toggle-none">Abonelikler</span></a>
+                </li>
                 <li class="nav-item <?php if (strstr($link, "sanal-pos")) { echo "active";} ?><?php if (strstr($link, "hesap")) { echo "active";} ?><?php if (strstr($link, "siparis")) { echo "active";} ?><?php if (strstr($link, "odeme-yontemleri")) { echo "active";} ?>">
                     <a class="nav-link" href="javascript: void(0);" aria-expanded="true"><i class="icon-basket-loaded"></i> <span class="toggle-none">Sipariş & Ödemeler<span style="float: right;" class="fa fa-angle-down"></span></span></a>
                     <ul class="nav-second-level nav flex-column sub-menu" aria-expanded="true">

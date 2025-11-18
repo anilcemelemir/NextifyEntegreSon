@@ -55,8 +55,28 @@ $urunwrite=$urunedit->fetch(PDO::FETCH_ASSOC);
 								<?php } ?>
 							</select>
 						</div>
+						<div class="row">
+							<div class="col-md-6">
+								<div class="form-group">
+									<label>Aylık Fiyat</label>
+									<div class="input-group">
+										<span class="input-group-addon"><i class="fa fa-try"></i></span>
+										<input type="number" step="0.01" name="urun_aylik_fiyat" value="<?php echo $urunwrite['urun_aylik_fiyat']; ?>" class="form-control">
+									</div>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									<label>Yıllık Fiyat</label>
+									<div class="input-group">
+										<span class="input-group-addon"><i class="fa fa-try"></i></span>
+										<input type="number" step="0.01" name="urun_yillik_fiyat" value="<?php echo $urunwrite['urun_yillik_fiyat']; ?>" class="form-control">
+									</div>
+								</div>
+							</div>
+						</div>
 						<div class="form-group">
-							<label>Paket Fiyat</label>
+							<label>Paket Fiyat (Opsiyonel)</label>
 							<div class="input-group col-md-4">
 								<span class="input-group-addon"><i class="fa fa-try"></i></span>
 								<input type="text" name="urun_fiyat" value="<?php echo $urunwrite['urun_fiyat']; ?>" class="form-control">
@@ -66,21 +86,20 @@ $urunwrite=$urunedit->fetch(PDO::FETCH_ASSOC);
 							<label>Vitrinde Göster</label>
 							<select name="urun_vitrin" class="form-control m-b">
 								<?php if ($urunwrite['urun_vitrin']==1) { ?>
-									<option value="1">Göster</option>
+									<option value="1" selected>Göster</option>
 									<option value="0">Gizle</option>
-									<?php
-								} else {?>
-									<option value="0">Gizle</option>
+								<?php } else { ?>
+									<option value="0" selected>Gizle</option>
 									<option value="1">Göster</option>
-								<?php }?>
+								<?php } ?>
 							</select>
-							<small class="text-muted">Paketler ana sayfada gösterilecektir</small>
-						</div>					
+						</div>
 						<div class="form-group">
 							<label>Açıklama</label>
-							<textarea style="height: 300px" name="urun_aciklama"><?php echo $urunwrite['urun_aciklama']; ?></textarea>
+							<textarea style="height: 200px" class="form-control" name="urun_aciklama"><?php echo $urunwrite['urun_aciklama']; ?></textarea>
 						</div>
-						<button style="cursor: pointer;" type="submit" name="paketduzenle" class="btn btn-success btn-icon"><i class="fa fa-floppy-o "></i>Güncelle</button>
+						
+						<button style="cursor: pointer;" type="submit" name="paketduzenle" class="btn btn-success btn-icon"><i class="fa fa-floppy-o"></i>Güncelle</button>
 					</form>
 				</div>
 			</div>

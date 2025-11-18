@@ -39,8 +39,28 @@ include 'sidebar.php';
 								<?php } ?>
 							</select>
 						</div>
+						<div class="row">
+							<div class="col-md-6">
+								<div class="form-group">
+									<label>Aylık Fiyat</label>
+									<div class="input-group">
+										<span class="input-group-addon"><i class="fa fa-try"></i></span>
+										<input type="number" step="0.01" name="urun_aylik_fiyat" placeholder="Aylık fiyat giriniz." class="form-control">
+									</div>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									<label>Yıllık Fiyat</label>
+									<div class="input-group">
+										<span class="input-group-addon"><i class="fa fa-try"></i></span>
+										<input type="number" step="0.01" name="urun_yillik_fiyat" placeholder="Yıllık fiyat giriniz." class="form-control">
+									</div>
+								</div>
+							</div>
+						</div>
 						<div class="form-group">
-							<label>Paket Fiyat</label>
+							<label>Paket Fiyat (Opsiyonel)</label>
 							<div class="input-group col-md-4">
 								<span class="input-group-addon"><i class="fa fa-try"></i></span>
 								<input type="text" name="urun_fiyat" placeholder="Yeni fiyatı giriniz." class="form-control">

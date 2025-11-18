@@ -512,7 +512,8 @@ if ( isset( $_POST[ 'sepetle' ] ) )
 		'paket' => $_POST[ 'urun_paket' ],
 		'urun'  => $_POST[ 'urun_adi' ],
 		'adet'  => $_POST[ 'urun_adet' ],
-		'fiyat' => $_POST[ 'urun_fiyat' ]
+		'fiyat' => $_POST[ 'urun_fiyat' ],
+		'abone_tur' => $_POST[ 'abone_tur' ] // Aylık/Yıllık bilgisi
 	);
 	$_SESSION[ 'urunler' ][] = $update;
 	if ( $update )
@@ -4966,8 +4967,8 @@ if ( isset( $_POST[ 'paketduzenle' ] ) )
 		exit;
 	}
 	if ($DemCont==1) {
-$_SESSION['status']="demo";
-$demoGeriLink = $_SERVER['HTTP_REFERER'];
+		$_SESSION['status']="demo";
+		$demoGeriLink = $_SERVER['HTTP_REFERER'];
 		header( "Location:$demoGeriLink" );
 		exit;
 	}
@@ -4976,6 +4977,8 @@ $demoGeriLink = $_SERVER['HTTP_REFERER'];
 		urun_baslik=:baslik,
 		urun_kategori=:kategori,
 		urun_fiyat=:fiyat,
+		urun_aylik_fiyat=:aylik_fiyat,
+		urun_yillik_fiyat=:yillik_fiyat,
 		urun_vitrin=:vitrin,
 		urun_aciklama=:aciklama
 		WHERE urun_id={$_POST['urun_id']}"
@@ -4984,6 +4987,8 @@ $demoGeriLink = $_SERVER['HTTP_REFERER'];
 		array(
 			'baslik'   => $_POST[ 'urun_baslik' ],
 			'fiyat'    => $_POST[ 'urun_fiyat' ],
+			'aylik_fiyat' => floatval($_POST[ 'urun_aylik_fiyat' ]),
+			'yillik_fiyat' => floatval($_POST[ 'urun_yillik_fiyat' ]),
 			'kategori'    => $_POST[ 'urun_kategori' ],
 			'vitrin'   => $_POST[ 'urun_vitrin' ],
 			'aciklama' => $_POST[ 'urun_aciklama' ]
@@ -5004,8 +5009,8 @@ if ( isset( $_POST[ 'paketekle' ] ) )
 		exit;
 	}
 	if ($DemCont==1) {
-$_SESSION['status']="demo";
-$demoGeriLink = $_SERVER['HTTP_REFERER'];
+		$_SESSION['status']="demo";
+		$demoGeriLink = $_SERVER['HTTP_REFERER'];
 		header( "Location:$demoGeriLink" );
 		exit;
 	}
@@ -5014,6 +5019,8 @@ $demoGeriLink = $_SERVER['HTTP_REFERER'];
 		urun_baslik=:baslik,
 		urun_kategori=:kategori,
 		urun_fiyat=:fiyat,
+		urun_aylik_fiyat=:aylik_fiyat,
+		urun_yillik_fiyat=:yillik_fiyat,
 		urun_aciklama=:aciklama,
 		urun_vitrin=:vitrin,
 		urun_paket=:paket"
@@ -5023,6 +5030,8 @@ $demoGeriLink = $_SERVER['HTTP_REFERER'];
 			'baslik'   => $_POST[ 'urun_baslik' ],
 			'kategori'   => $_POST[ 'urun_kategori' ],
 			'fiyat'    => $_POST[ 'urun_fiyat' ],
+			'aylik_fiyat' => floatval($_POST[ 'urun_aylik_fiyat' ]),
+			'yillik_fiyat' => floatval($_POST[ 'urun_yillik_fiyat' ]),
 			'aciklama' => $_POST[ 'urun_aciklama' ],
 			'vitrin'   => $_POST[ 'urun_vitrin' ],
 			'paket'    => '1'
@@ -5590,4 +5599,176 @@ $demoGeriLink = $_SERVER['HTTP_REFERER'];
 	{
 		Header( "Location:../odeme-yontemleri.php?status=no" );
 	}
+}
+
+/**
+ * ABONELIK YÖNETİMİ
+ */
+
+// Abonelik oluştur (Paketler sayfasından)
+if ( isset( $_POST[ 'abonelik_olustur' ] ) ) {
+    if (!isset($_SESSION['uye_mail'])) {
+        Header( "Location:../../hesabim/uye-girisi?status=error" );
+        exit;
+    }
+    if ($DemCont==1) {
+        $_SESSION['status']="demo";
+        $demoGeriLink = $_SERVER['HTTP_REFERER'];
+        header( "Location:$demoGeriLink" );
+        exit;
+    }
+    
+    $urun_id = htmlspecialchars(trim($_POST['urun_id']));
+    $abone_tur = htmlspecialchars(trim($_POST['abone_tur'])); // aylik | yillik
+    
+    if (!$urun_id || !$abone_tur) {
+        Header( "Location:../../paketler?status=error" );
+        exit;
+    }
+    
+    // Ürün bilgisini al
+    $urunsor = $db->prepare("SELECT * from urunler where urun_id=:urun_id");
+    $urunsor->execute(array('urun_id' => $urun_id));
+    $urun = $urunsor->fetch(PDO::FETCH_ASSOC);
+    
+    if (!$urun) {
+        Header( "Location:../../paketler?status=error" );
+        exit;
+    }
+    
+    $fiyat = ($abone_tur === 'yillik') ? $urun['urun_yillik_fiyat'] : $urun['urun_aylik_fiyat'];
+    
+    if (!$fiyat) {
+        Header( "Location:../../paketler?status=error" );
+        exit;
+    }
+    
+    $baslangic_tarih = date('Y-m-d H:i:s');
+    $bitis_tarih = ($abone_tur === 'yillik') 
+        ? date('Y-m-d H:i:s', strtotime($baslangic_tarih . ' +1 year'))
+        : date('Y-m-d H:i:s', strtotime($baslangic_tarih . ' +1 month'));
+    
+    $kaydet = $db->prepare(
+        "INSERT INTO abonelikler SET
+        abone_uye=:uye,
+        abone_urun=:urun,
+        abone_tur=:tur,
+        abone_baslangic_tarih=:baslangic,
+        abone_bitis_tarih=:bitis,
+        abone_sonraki_odeme_tarih=:bitis,
+        abone_durum=:durum"
+    );
+    
+    $insert = $kaydet->execute(array(
+        'uye' => $userprint['uye_id'],
+        'urun' => $urun_id,
+        'tur' => $abone_tur,
+        'baslangic' => $baslangic_tarih,
+        'bitis' => $bitis_tarih,
+        'durum' => 'bekleme'
+    ));
+    
+    if ($insert) {
+        $abone_id = $db->lastInsertId();
+        
+        // Ödeme kaydı oluştur
+        $odeme_kaydet = $db->prepare(
+            "INSERT INTO abonelik_odemeler SET
+            odeme_abone=:abone,
+            odeme_uye=:uye,
+            odeme_tutar=:tutar,
+            odeme_tur=:tur,
+            odeme_durum=:durum"
+        );
+        
+        $odeme_kaydet->execute(array(
+            'abone' => $abone_id,
+            'uye' => $userprint['uye_id'],
+            'tutar' => $fiyat,
+            'tur' => $abone_tur,
+            'durum' => 'bekleme'
+        ));
+        
+        $odeme_id = $db->lastInsertId();
+        
+        // Ödeme sayfasına yönlendir
+        Header( "Location:../../hesabim/abonelik-odemesi?abone_id=$abone_id&odeme_id=$odeme_id" );
+    } else {
+        Header( "Location:../../paketler?status=no" );
+    }
+}
+
+// Ödeme başarılı
+if ( isset( $_GET[ 'odeme_basarili' ] ) && $_GET['odeme_basarili'] == 'ok' ) {
+    if (!isset($_SESSION['uye_mail'])) {
+        exit;
+    }
+    
+    $abone_id = htmlspecialchars(trim($_GET['abone_id']));
+    
+    if (!$abone_id) {
+        exit;
+    }
+    
+    // Aboneliği aktif yap
+    $ayarkaydet = $db->prepare(
+        "UPDATE abonelikler SET
+        abone_durum=:durum,
+        abone_son_odeme_tarih=:tarih
+        WHERE abone_id={$abone_id}"
+    );
+    
+    $update = $ayarkaydet->execute(array(
+        'durum' => 'aktif',
+        'tarih' => date('Y-m-d H:i:s')
+    ));
+    
+    if ($update) {
+        // Mail gönder
+        $abonesor = $db->prepare("SELECT a.*, u.urun_baslik, uy.uye_mail, uy.uye_ad, uy.uye_soyad 
+                                  FROM abonelikler a
+                                  JOIN urunler u ON a.abone_urun = u.urun_id
+                                  JOIN uye uy ON a.abone_uye = uy.uye_id
+                                  WHERE a.abone_id = ?");
+        $abonesor->execute(array($abone_id));
+        $abone = $abonesor->fetch(PDO::FETCH_ASSOC);
+        
+        $mesaj = "Merhaba sayın ".$abone['uye_ad']." ".$abone['uye_soyad']." <br><br>
+                 ".$abone['urun_baslik']." paketine başarıyla abone oldunuz!<br>
+                 Abonelik Türü: ".($abone['abone_tur'] === 'yillik' ? 'Yıllık' : 'Aylık')."<br>
+                 Bitiş Tarihi: ".date('d.m.Y', strtotime($abone['abone_bitis_tarih']))."<br><br>
+                 Üye panelinden aboneliklerinizi yönetebilirsiniz.";
+        
+        mailsend($abone['uye_mail'], 'Aboneliğiniz Başarıyla Oluşturuldu!', $mesaj);
+        
+        Header( "Location:../../hesabim/abonelikler?status=ok" );
+    } else {
+        Header( "Location:../../hesabim/abonelikler?status=no" );
+    }
+}
+
+// Ödeme başarısız
+if ( isset( $_GET[ 'odeme_basarisiz' ] ) && $_GET['odeme_basarisiz'] == 'ok' ) {
+    if (!isset($_SESSION['uye_mail'])) {
+        exit;
+    }
+    
+    $odeme_id = htmlspecialchars(trim($_GET['odeme_id']));
+    $neden = htmlspecialchars(trim($_GET['neden']));
+    
+    $odeme_guncelle = $db->prepare(
+        "UPDATE abonelik_odemeler SET
+        odeme_durum=:durum,
+        odeme_basarisiz_neden=:neden,
+        odeme_tarih=:tarih
+        WHERE odeme_id={$odeme_id}"
+    );
+    
+    $odeme_guncelle->execute(array(
+        'durum' => 'basarisiz',
+        'neden' => $neden,
+        'tarih' => date('Y-m-d H:i:s')
+    ));
+    
+    Header( "Location:../../hesabim/abonelikler?status=payment_failed" );
 }

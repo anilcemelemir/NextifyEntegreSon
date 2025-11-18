@@ -106,7 +106,25 @@ if (isset($_POST['adetsil'])) {
                                     <?php } ?>
                                 </th>
                                 <td class="product-name" data-title="Ürün/Hizmet">
-                                    <span class="whish-title"><?php if ($urun['paket']==0) { ?><a target="_blank" href="<?=seo('detay-'.$uruncekxc["urun_baslik"]).'-'.$uruncekxc["urun_id"]?>"><?php echo $urun["urun"] ?></a><?php } else { ?><b><?php echo $uruncekxc["urun_baslik"] ?></b><?php } ?></span>
+                                    <span class="whish-title">
+                                        <?php if ($urun['paket']==0) { ?>
+                                            <a target="_blank" href="<?=seo('detay-'.$uruncekxc["urun_baslik"]).'-'.$uruncekxc["urun_id"]?>"><?php echo $urun["urun"] ?></a>
+                                        <?php } else { ?>
+                                            <b><?php echo $uruncekxc["urun_baslik"] ?></b>
+                                            <?php if (isset($urun['abone_tur']) && !empty($urun['abone_tur'])): ?>
+                                                <br />
+                                                <small style="color: #999; font-size: 11px;">
+                                                    <?php 
+                                                        if ($urun['abone_tur'] === 'yillik') {
+                                                            echo '<i class="fa fa-calendar"></i> <strong>Yıllık Abonelik</strong>';
+                                                        } else {
+                                                            echo '<i class="fa fa-calendar-o"></i> <strong>Aylık Abonelik</strong>';
+                                                        }
+                                                    ?>
+                                                </small>
+                                            <?php endif; ?>
+                                        <?php } ?>
+                                    </span>
                                 </td>
                                 <td class="product-quantity text-center" data-title="Adet">
                                     <div class="quantity">
