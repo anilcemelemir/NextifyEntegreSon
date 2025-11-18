@@ -19,7 +19,6 @@ if( $post['status'] == 'success' ) {
 	$IdKontrol=$post['merchant_oid'];
 	$Say=strlen($IdKontrol);
 
-
 	if ($Say>'9') {
 		$TemizID = substr($IdKontrol, 9,300);
 	} else {
@@ -49,12 +48,52 @@ if( $post['status'] == 'success' ) {
 			siparis_durum=:durum
 			WHERE siparis_id={$TemizID}"
 		);
-		$update     = $ayarkaydet->execute(
+		$update = $ayarkaydet->execute(
 			array(
-				'durum' => 0 // sipariş onaylanmadı 1 || sipariş onaylandı 0
+				'durum' => 0 // sipariş onaylandı
 			));
 
+		// ============================================
+		// ABONELIK OLUŞTUR
+		// ============================================
+		if($update) {
+			// Sipariş detaylarından ürün bilgisini al
+			$urunsor=$db->prepare("SELECT * from urunler where urun_id=:urun_id");
+			$urunsor->execute(array('urun_id' => $inovanceprint['urun_id']));
+			$uruncek=$urunsor->fetch(PDO::FETCH_ASSOC);
 
+			// Abonelik türü ve tarihleri hesapla
+			$abone_tur = $_POST['abone_tur'] ?? 'aylik'; // POST'tan gel, yoksa aylık default
+			$baslangic_tarih = date('Y-m-d H:i:s');
+			
+			if($abone_tur === 'yillik') {
+				$bitis_tarih = date('Y-m-d H:i:s', strtotime($baslangic_tarih . ' +1 year'));
+			} else {
+				$bitis_tarih = date('Y-m-d H:i:s', strtotime($baslangic_tarih . ' +1 month'));
+			}
+
+			// Abonelik kaydı oluştur
+			$abonelik_kaydet = $db->prepare(
+				"INSERT INTO abonelikler SET
+				abone_uye=:uye,
+				abone_urun=:urun,
+				abone_tur=:tur,
+				abone_baslangic_tarih=:baslangic,
+				abone_bitis_tarih=:bitis,
+				abone_siparis=:siparis,
+				abone_durum=:durum"
+			);
+			
+			$abonelik_insert = $abonelik_kaydet->execute(array(
+				'uye' => $userprint['uye_id'],
+				'urun' => $uruncek['urun_id'],
+				'tur' => $abone_tur,
+				'baslangic' => $baslangic_tarih,
+				'bitis' => $bitis_tarih,
+				'siparis' => $TemizID,
+				'durum' => 1 // Aktif abonelik
+			));
+		}
 
 		$settings=$db->prepare("SELECT * from ayar where ayar_id=?");
 		$settings->execute(array(0));
@@ -62,9 +101,9 @@ if( $post['status'] == 'success' ) {
 
 		$idmesaj = $db->lastInsertId();
 
-		$mesajAdmin = "Merhaba sayın yönetici web sitesi üzerinden ".$userprint[ 'uye_ad' ]." ".$userprint[ 'uye_soyad' ]." isimli üye tarafından [".$TemizID."] id li sipariş ödemesi kredi kartı ile başarılı bir şekilde yapılmıştır. <br> <b>Sipariş Fiyatı:</b> <br>".$siparis_fiyat."TL<br> <b>Ödeme Yöntemi:</b> <br>".$siparis_odeme;
+		$mesajAdmin = "Merhaba sayın yönetici web sitesi üzerinden ".$userprint[ 'uye_ad' ]." ".$userprint[ 'uye_soyad' ]." isimli üye tarafından [".$TemizID."] id li sipariş ödemesi kredi kartı ile başarılı bir şekilde tamamlanmıştır.";
 
-		$mesaj = "Merhaba sayın ".$userprint[ 'uye_ad' ]." ".$userprint[ 'uye_soyad' ]." <br> web sitemiz üzerinden [".$TemizID."] id li siparişinizin ödemesi kredi kartı ile başarılı bir şekilde alınmıştır. Bizi tercih ettiğiniz için teşekkür ederiz.";
+		$mesaj = "Merhaba sayın ".$userprint[ 'uye_ad' ]." ".$userprint[ 'uye_soyad' ]." <br> web sitemiz üzerinden [".$TemizID."] id li siparişinizin ödemesi kredi kartı ile başarılı bir şekilde tamamlanmıştır. Aboneliğiniz aktif hale getirilmiştir.";
 
 		$mailAdres = $settingsprint['ayar_mail'];
 
@@ -72,7 +111,7 @@ if( $post['status'] == 'success' ) {
 		mailsend($userprint[ 'uye_mail' ],' [Teşekkürler] Sipariş Ödemesi Tamamlandı!',$mesaj);
 	}
 
-} else { 
+} else {
 	echo "OK";
 	exit;
 

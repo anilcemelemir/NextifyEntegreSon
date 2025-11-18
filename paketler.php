@@ -38,24 +38,211 @@ require 'include/menu.php';
         <div class="container">
             <div class="row">
                 <div class="col-md-12 col-sm-12 col-xs-12">
-                    <!-- AYLIK/YILLIK TOGGLE -->
-                    <div style="text-align: center; margin-bottom: 40px;">
-                        <div style="display: inline-block; background: rgba(255,255,255,0.1); padding: 15px 25px; border-radius: 50px; backdrop-filter: blur(10px);">
-                            <label style="margin: 0; display: inline-block; margin-right: 20px; cursor: pointer;">
-                                <input type="radio" name="billing_period" value="aylik" checked onchange="toggleBiling('aylik')" style="margin-right: 8px;" />
-                                <span style="color: #fff; font-weight: bold; font-size: 16px;">Aylık</span>
-                            </label>
-                            <label style="margin: 0; display: inline-block; cursor: pointer;">
-                                <input type="radio" name="billing_period" value="yillik" onchange="toggleBiling('yillik')" style="margin-right: 8px;" />
-                                <span style="color: #fff; font-weight: bold; font-size: 16px;">Yıllık</span>
-                                <span style="color: #28a745; font-weight: bold; font-size: 14px; margin-left: 8px; background: rgba(40, 167, 69, 0.3); padding: 3px 8px; border-radius: 20px; display: inline-block;">%33 İndirim</span>
-                            </label>
-                        </div>
-                    </div>
+                    <!-- AYLIK/YILLIK TOGGLE SECTION - MODERN DESIGN -->
+<div style="text-align: center; margin-bottom: 50px; margin-top: 30px;">
+    <div style="display: inline-block;">
+        <div class="billing-toggle-wrapper">
+            <div class="billing-toggle-container">
+                <input type="radio" id="toggle-aylik" name="billing_period" value="aylik" checked onchange="toggleBiling('aylik')" />
+                <input type="radio" id="toggle-yillik" name="billing_period" value="yillik" onchange="toggleBiling('yillik')" />
+                
+                <label for="toggle-aylik" class="toggle-label toggle-left">
+                    <span class="toggle-text">Aylık Ödeme</span>
+                </label>
+                
+                <label for="toggle-yillik" class="toggle-label toggle-right">
+                    <span class="toggle-text">Yıllık Ödeme</span>
+                    <span class="discount-badge">%33 İndirim</span>
+                </label>
+                
+                <div class="toggle-background"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* MODERN BILLING TOGGLE STYLES */
+.billing-toggle-wrapper {
+    padding: 0;
+    margin: 0;
+}
+
+.billing-toggle-container {
+    position: relative;
+    display: inline-flex;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 50px;
+    padding: 6px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    min-width: 450px;
+    height: 52px;
+}
+
+.billing-toggle-container input[type="radio"] {
+    display: none;
+}
+
+.toggle-label {
+    flex: 1;
+    padding: 0 24px;
+    text-align: center;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.6);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    z-index: 2;
+    user-select: none;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    height: 100%;
+    width: 50%;
+}
+
+.toggle-text {
+    display: inline-block;
+    white-space: nowrap;
+}
+
+.discount-badge {
+    display: inline-block;
+    background: rgba(40, 167, 69, 0.3);
+    color: #28a745;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 700;
+    margin-left: 4px;
+    animation: fadeInScale 0.5s ease-out;
+    white-space: nowrap;
+}
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.toggle-background {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    width: calc(50% - 6px);
+    height: calc(100% - 12px);
+    background: linear-gradient(135deg, #fe4c1c 0%, #fe7c3c 100%);
+    border-radius: 50px;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 15px rgba(254, 76, 28, 0.3);
+    z-index: 1;
+}
+
+/* Active state for Aylık */
+.billing-toggle-container input[id="toggle-aylik"]:checked ~ .toggle-background {
+    left: 6px;
+    background: linear-gradient(135deg, #fe4c1c 0%, #fe7c3c 100%);
+    box-shadow: 0 4px 15px rgba(254, 76, 28, 0.3);
+}
+
+/* Active state for Yıllık */
+.billing-toggle-container input[id="toggle-yillik"]:checked ~ .toggle-background {
+    left: calc(50% + 0px);
+    background: linear-gradient(135deg, #0160e7 0%, #00c3ff 100%);
+    box-shadow: 0 4px 15px rgba(1, 96, 231, 0.3);
+}
+
+/* Text colors for selected states - BEYAZ METİN AKTİF BUTONDA */
+.billing-toggle-container input[id="toggle-aylik"]:checked ~ .toggle-left {
+    color: #fff;
+    font-weight: 700;
+}
+
+.billing-toggle-container input[id="toggle-yillik"]:checked ~ .toggle-right {
+    color: #fff;
+    font-weight: 700;
+}
+
+/* Text colors for inactive states - AÇIK GRİ RENK */
+.billing-toggle-container input[id="toggle-aylik"]:not(:checked) ~ .toggle-left {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.billing-toggle-container input[id="toggle-yillik"]:not(:checked) ~ .toggle-right {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.toggle-label:hover {
+    color: #fff;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .billing-toggle-container {
+        min-width: auto;
+        width: 100%;
+        max-width: 400px;
+        height: auto;
+        flex-direction: column;
+        padding: 8px;
+    }
+    
+    .toggle-label {
+        width: 100%;
+        height: 48px;
+        padding: 0 16px;
+        font-size: 14px;
+        margin: 0;
+    }
+    
+    .toggle-background {
+        width: calc(100% - 16px);
+        height: calc(50% - 8px);
+        top: 8px;
+    }
+    
+    .billing-toggle-container input[id="toggle-yillik"]:checked ~ .toggle-background {
+        left: 8px;
+        top: calc(50% + 0px);
+    }
+    
+    .discount-badge {
+        font-size: 10px;
+        padding: 2px 6px;
+        margin-left: 3px;
+    }
+}
+
+/* Additional animations */
+.toggle-label::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50px;
+    opacity: 0;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+    transition: opacity 0.3s;
+    pointer-events: none;
+}
+
+.toggle-label:active::before {
+    opacity: 1;
+}
+</style>
 
                     <div class="ot-tabs">
                         <ul class="unstyle text-center" style="display: flex; flex-wrap: wrap; margin-right: -15px; margin-left: -15px; place-content: space-between space-around; align-items: center; background-size: cover; justify-content: center;">
-                            <a class="octf-btn  <?php if (empty($gelenler)) { echo "octf-btn"; } else { echo "octf-btn-white"; } ?>" style="margin-right: 10px;" href="paketler"><img style="height: 60px;" src="images/expand.png" alt="Paketler"> Tüm Paketler</a>
+                            <a class="octf-btn  <?php if (empty($gelenler)) { echo "octf-btn"; } else { echo "octf-btn-white"; } ?>" style="margin-right: 10px;" href="paketler"><img style="height: 60px;" src="admin/images/tum-paketler.png" alt="Tüm Paketler"></a>
                             <?php 
                                 $katFirst=0; 
                                 $paketkategori=$db->prepare("SELECT * from kategoripaket");
@@ -67,7 +254,7 @@ require 'include/menu.php';
                                     $urunVarmi = $urunsor->rowCount();
                                     if ($urunVarmi > 0) { 
                             ?>
-                            <a class="octf-btn  <?php if ($eskikategoriyaz['kategori_id'] == $gelenler) { echo "octf-btn"; } else { echo "octf-btn-white"; } ?>" style="margin-right: 10px;" href="<?php echo $settingsprint['ayar_siteurl'].seo('paket-'.$eskikategoriyaz["kategori_ad"]).'-'.$eskikategoriyaz["kategori_id"]; ?>">
+                            <a class="octf-btn  <?php if ($eskikategoriyaz['kategori_id'] == $gelenler) { echo "octf-btn"; } else { echo "octf-btn-white"; } ?>" style="margin-right: 10px;" href="paketler?paket_id=<?php echo $eskikategoriyaz['kategori_id']; ?>">
                                 <img style="height: 60px;" src="admin/<?php echo $eskikategoriyaz['resim']; ?>" alt="<?php echo $eskikategoriyaz['kategori_ad']; ?>"> <?php echo $eskikategoriyaz['kategori_ad']; ?>
                             </a>
                             <?php 
@@ -78,7 +265,7 @@ require 'include/menu.php';
                         </ul>
 
                         <div id="tab-" class="tab-content <?php if ($kataltFirst == 0) { echo "current"; } ?>" style="background: none;">
-                            <div class="row" style="display: flex; flex-wrap: wrap; margin-right: -15px; margin-left: -15px; place-content: space-between space-around; align-items: center; background-size: cover;">
+                            <div class="row" style="display: flex; flex-wrap: wrap; margin-right: -15px; margin-left: -15px; place-content: space-between space-around; align-items: center; background-size: cover; justify-content: center;">
                                 <?php 
                                     $urr = 0;
                                     if (!empty($gelenler)) {
@@ -106,9 +293,15 @@ require 'include/menu.php';
 
                                 <div class="col-md-4 col-sm-12 col-xs-12  m-b50">
                                     <div class="ot-pricing-table bg-shape <?php if($urr == 0) { echo "s1"; } elseif($urr == 1) { echo "s3 feature"; } else { echo "s2"; } ?>">
-                                        <span class="title-table"><?php echo $uruncek['urun_baslik']; ?></span>
+                                        <span class="title-table">
+                                            <?php echo $uruncek['urun_baslik']; ?>
+                                            <br>
+                                            <small style="font-size: 12px; color: #999; font-weight: normal;">
+                                                (<?php echo $eskikategoriyaz['kategori_ad']; ?>)
+                                            </small>
+                                        </span>
                                         <div class="inner-table">
-                                            <img src="admin/<?php echo $eskikategoriyaz['resim']; ?>" alt="Executive">
+                                            <img src="admin/<?php echo $eskikategoriyaz['resim']; ?>" alt="<?php echo $uruncek['urun_baslik']; ?>">
                                             <h2 id="fiyat-<?php echo $uruncek['urun_id']; ?>">
                                                 <sup><i class="fas fa-lira-sign"></i></sup> 
                                                 <span id="fiyat-deger-<?php echo $uruncek['urun_id']; ?>">
@@ -118,13 +311,6 @@ require 'include/menu.php';
                                             </h2>
                                             <p style="font-size: 12px; color: #999; margin: 5px 0;">
                                                 <span id="period-<?php echo $uruncek['urun_id']; ?>">Aylık Ödeme</span>
-                                            </p>
-                                            <p>
-                                                <h5 class="card-title text-muted text-uppercase text-center">
-                                                    <a href="<?php echo $settingsprint['ayar_siteurl'].seo('paket-'.$eskikategoriyaz["kategori_ad"]).'-'.$eskikategoriyaz["kategori_id"]; ?>">
-                                                        <?php echo $eskikategoriyaz['kategori_ad']; ?>
-                                                    </a>
-                                                </h5>
                                             </p>
                                             <div class="details">
                                                 <ul>
