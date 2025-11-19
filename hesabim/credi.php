@@ -81,7 +81,7 @@ $userprint=$user->fetch(PDO::FETCH_ASSOC);
 
 								$merchant_oid = $siparisID;
 
-								$user_name = $userprint['uye_ad'].$userprint['uye_soyad'];
+								$user_name = $userprint['uye_ad'].' '.$userprint['uye_soyad'];
 
 								$user_address = $adressUser;
 
@@ -115,6 +115,12 @@ $userprint=$user->fetch(PDO::FETCH_ASSOC);
 								$max_installment = 0;
 
 								$currency = "TL";
+								
+								// ÖNEMLİ: CALLBACK URL EKLENDİ - Docker için localhost yerine container name kullanın
+								// Eğer Docker'da web container'ınızın adı "web" ise:
+								// $lang = "tr"; // isteğe bağlı
+								// Eğer dışarıdan erişilebilir bir domain varsa onu kullanın:
+								$callback_url = $settingsprint['ayar_siteurl']."pay_int.php";
 
 								$hash_str = $merchant_id .$user_ip .$merchant_oid .$email .$payment_amount .$user_basket.$no_installment.$max_installment.$currency.$test_mode;
 								$paytr_token=base64_encode(hash_hmac('sha256',$hash_str.$merchant_salt,$merchant_key,true));
@@ -136,7 +142,8 @@ $userprint=$user->fetch(PDO::FETCH_ASSOC);
 									'merchant_fail_url'=>$merchant_fail_url,
 									'timeout_limit'=>$timeout_limit,
 									'currency'=>$currency,
-									'test_mode'=>$test_mode
+									'test_mode'=>$test_mode,
+									'callback_url'=>$callback_url  // CALLBACK URL EKLENDİ
 								);
 
 								$ch=curl_init();
